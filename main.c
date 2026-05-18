@@ -236,8 +236,12 @@ static void show_panel_theme_menu(GtkWidget *widget, gpointer user_data) {
 static GtkWidget* create_terminal_widget(const char *working_directory, int theme_index) {
     GtkWidget *term = vte_terminal_new();
     
-    // Set font
+    // Set font: Use Menlo on macOS (system mono) and UbuntuMono elsewhere
+#ifdef __APPLE__
+    PangoFontDescription *font_desc = pango_font_description_from_string("Menlo 12");
+#else
     PangoFontDescription *font_desc = pango_font_description_from_string("UbuntuMono 12");
+#endif
     vte_terminal_set_font(VTE_TERMINAL(term), font_desc);
     pango_font_description_free(font_desc);
 
@@ -276,6 +280,10 @@ static GtkWidget* create_terminal_widget(const char *working_directory, int them
     g_object_set_data(G_OBJECT(overlay), "vte-terminal", term);
     g_object_set_data(G_OBJECT(overlay), "theme-index", GINT_TO_POINTER(theme_index));
     g_object_set_data(G_OBJECT(term), "panel-overlay", overlay);
+
+    // Explicitly enable BIDI (RTL) and shaping support
+    vte_terminal_set_enable_bidi(VTE_TERMINAL(term), TRUE);
+    vte_terminal_set_enable_shaping(VTE_TERMINAL(term), TRUE);
 
     // Setup mouse events
     vte_terminal_set_mouse_autohide(VTE_TERMINAL(term), TRUE);
