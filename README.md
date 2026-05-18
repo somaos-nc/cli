@@ -14,16 +14,29 @@ Originally prototyped in Flutter, this project was rewritten in C to leverage na
 ## Prerequisites
 You will need a standard C build environment along with GTK3, VTE, and Fontconfig headers.
 
-On Ubuntu/Debian:
+### On Ubuntu/Debian:
 ```bash
 sudo apt update
 sudo apt install build-essential libgtk-3-dev libvte-2.91-dev libfontconfig1-dev
 ```
 
+### On macOS (Homebrew):
+```bash
+brew install pkg-config gtk+3 vte3 adwaita-icon-theme
+```
+
 ## Building and Running
 To build the application locally:
+
+**Linux:**
 ```bash
 make
+./cli
+```
+
+**macOS:**
+```bash
+make -f Makefile.macos
 ./cli
 ```
 
@@ -35,8 +48,16 @@ make test
 ```
 
 ## Packaging
-You can generate a standalone Debian installer (`.deb`), complete with `.desktop` shortcuts and icons.
+You can generate platform-specific installers.
+
+**Linux (Debian):**
 ```bash
 ./build_deb.sh
 sudo dpkg -i releases/cli_1.0.2_amd64.deb
 ```
+
+**macOS (.app & .dmg):**
+```bash
+./build_osx.sh
+```
+The resulting DMG will be located in `releases/cli_1.0.2_macOS.dmg`.

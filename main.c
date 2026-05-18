@@ -8,6 +8,10 @@
 #include <unistd.h>
 #include <time.h>
 
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+
 static GtkWidget *main_window = NULL;
 static GtkWidget *root_box = NULL;
 
@@ -545,6 +549,19 @@ static void setup_crash_handler() {
 }
 
 int main(int argc, char *argv[]) {
+#ifdef __APPLE__
+    // If running inside a .app bundle, change directory to Resources
+    char path[1024];
+    uint32_t size = sizeof(path);
+    if (_NSGetExecutablePath(path, &size) == 0) {
+        char *last_slash = strrchr(path, '/');
+        if (last_slash) {
+            *last_slash = '\0';
+            chdir(path);
+            chdir("../Resources");
+        }
+    }
+#endif
     setup_crash_handler();
     
     gtk_init(&argc, &argv);

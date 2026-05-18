@@ -1,0 +1,12 @@
+CC = gcc
+PKG_CONFIG = pkg-config
+CFLAGS = `$(PKG_CONFIG) --cflags gtk+-3.0 vte-2.91 fontconfig` -Wall -Wextra -O2
+LDFLAGS = `$(PKG_CONFIG) --libs gtk+-3.0 vte-2.91 fontconfig`
+
+all: cli
+
+cli: main.c
+	$(CC) $(CFLAGS) -o cli main.c $(LDFLAGS)
+
+clean:
+	rm -f cli
