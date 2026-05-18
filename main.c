@@ -293,9 +293,12 @@ static GtkWidget* create_terminal_widget(const char *working_directory, int them
     // Spawn shell
     char *shell = getenv("SHELL");
     if (!shell) shell = "/bin/bash";
-    char **command = g_new(char *, 2);
+    
+    // Start as a login shell to ensure config files (~/.zshrc, ~/.bashrc) are sourced
+    char **command = g_new(char *, 3);
     command[0] = g_strdup(shell);
-    command[1] = NULL;
+    command[1] = g_strdup("-l");
+    command[2] = NULL;
 
     const char *cwd = (working_directory && g_file_test(working_directory, G_FILE_TEST_IS_DIR)) ? working_directory : g_get_home_dir();
 
